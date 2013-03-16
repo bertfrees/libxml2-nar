@@ -5,6 +5,8 @@
 	<artifactId>xml2</artifactId>
 	<version>2.7.3</version>
 	<packaging>nar</packaging>
+	<name>libxml2-nar</name>
+	<description>libxml2 packaged in a NAR (Native ARchive).</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<nar.arch.option/>
@@ -57,12 +59,13 @@
 				<executions>
 					<execution>
 						<id>copy-sources</id>
-						<phase>process-sources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
 							<outputDirectory>src/gnu</outputDirectory>
+							<overwrite>true</overwrite>
 							<resources>
 								<resource>
 									<directory>target/checkout</directory>
@@ -108,15 +111,19 @@
 							<workDir>src/gnu</workDir>
 							<script>
 								#!/bin/sh
-								# Mac OS X:
-								sed -i '' -e 's/libtool/glibtool/' autogen.sh
-								sed -i '' -e '/^\$srcdir\/configure/,$d' autogen.sh
-								sed -i '' -e 's|^\(libxml2_la_LDFLAGS =\)\(.*\)$|\1 ${nar.install_name.option} ${nar.rpath.option} -avoid-version \2|' Makefile.am
-								sed -i '' -e '/^prefix=/d' \
-								          -e '/^exec_prefix=/d' \
-								          -e 's|@libdir@|${prefix}/xml2-${project.version}-${nar.aol}-shared/lib/${nar.aol}/shared|' \
-								          -e 's|@includedir@|${prefix}/xml2-${project.version}-noarch/include|' \
-								       libxml-2.0.pc.in
+								sed \
+								-e 's/libtool/glibtool/' \
+								-e '/^\$srcdir\/configure/,$d' \
+								../../target/checkout/autogen.sh > autogen.sh
+								sed \
+								-e 's|^\(libxml2_la_LDFLAGS =\)\(.*\)$|\1 ${nar.install_name.option} ${nar.rpath.option} -avoid-version \2|' \
+								../../target/checkout/Makefile.am > Makefile.am
+								sed \
+								-e '/^prefix=/d' \
+								-e '/^exec_prefix=/d' \
+								-e 's|@libdir@|${prefix}/xml2-${project.version}-${nar.aol}-shared/lib/${nar.aol}/shared|' \
+								-e 's|@includedir@|${prefix}/xml2-${project.version}-noarch/include|' \
+								../../target/checkout/libxml-2.0.pc.in > libxml-2.0.pc.in
 								chmod +x install-sh
 							</script>
 						</configuration>
@@ -145,7 +152,7 @@
 				</property>
 			</activation>
 			<properties>
-				<nar.arch.option>-arch i386</nar.arch.option>
+				<nar.arch.option>-m32</nar.arch.option>
 			</properties>
 		</profile>
 		<profile>
@@ -157,7 +164,7 @@
 				</property>
 			</activation>
 			<properties>
-				<nar.rpath.option>-Wl,-rpath,.:$ORIGIN,--enable-new-dtags</nar.rpath.option>
+				<nar.rpath.option>-Wl,-rpath,".:\\\$\$ORIGIN",--enable-new-dtags</nar.rpath.option>
 			</properties>
 		</profile>
 		<profile>
