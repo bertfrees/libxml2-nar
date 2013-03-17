@@ -112,7 +112,8 @@
 							<script>
 								#!/bin/sh
 								sed \
-								-e 's/libtool/glibtool/' \
+								-e 's/(libtool --version)/($(which glibtool || which libtool) --version)/' \
+								-e 's/libtoolize/$(which glibtoolize || which libtoolize)/' \
 								-e '/^\$srcdir\/configure/,$d' \
 								../../target/checkout/autogen.sh > autogen.sh
 								sed \
