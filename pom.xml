@@ -120,6 +120,11 @@
 								-e 's|^\(libxml2_la_LDFLAGS =\)\(.*\)$|\1 ${nar.install_name.option} ${nar.rpath.option} -avoid-version \2|' \
 								../../target/checkout/Makefile.am > Makefile.am
 								sed \
+								-e '/^AC_INIT.*$/a\
+								CFLAGS="$CFLAGS ${nar.arch.option}"\
+								' \
+								../../target/checkout/configure.in > configure.in
+								sed \
 								-e '/^prefix=/d' \
 								-e '/^exec_prefix=/d' \
 								-e 's|@libdir@|@NAR@/lib/${nar.aol}/shared|' \
