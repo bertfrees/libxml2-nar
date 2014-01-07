@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.daisy.libs</groupId>
 	<artifactId>xml2</artifactId>
-	<version>2.7.3-SNAPSHOT</version>
+	<version>2.7.3</version>
 	<packaging>nar</packaging>
 	<name>libxml2-nar</name>
 	<description>libxml2 packaged in a NAR (Native ARchive).</description>
